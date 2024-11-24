@@ -3,6 +3,10 @@
 import { describe, expect, it } from "vitest";
 
 import { MockSchemaType, schema } from "../__example__/index";
+import {
+    PixelawSchemaType,
+    schema as pixelawSchema,
+} from "../__example__/pixelaw";
 import { convertQueryToClause } from "../convertQuerytoClause";
 import { QueryType, SchemaType } from "../types";
 
@@ -178,6 +182,83 @@ describe("convertQueryToClause", () => {
                             member: "durability",
                             operator: "Lt",
                             value: { Primitive: { U32: 50 } },
+                        },
+                    },
+                ],
+            },
+        });
+    });
+
+    it("should convert pixelaw query", () => {
+        const query: QueryType<PixelawSchemaType> = {
+            pixelaw: {
+                Pixel: {
+                    $: {
+                        where: {
+                            And: [
+                                {
+                                    x: {
+                                        $gte: 0,
+                                    },
+                                },
+                                {
+                                    x: {
+                                        $lte: 10,
+                                    },
+                                },
+                                {
+                                    y: {
+                                        $gte: 0,
+                                    },
+                                },
+                                {
+                                    y: {
+                                        $lte: 10,
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                },
+            },
+        };
+        const result = convertQueryToClause(query, pixelawSchema);
+        console.dir(result, { depth: null });
+
+        expect(result).toEqual({
+            Composite: {
+                operator: "And",
+                clauses: [
+                    {
+                        Member: {
+                            model: "pixelaw-Pixel",
+                            member: "x",
+                            operator: "Gte",
+                            value: { Primitive: { U32: 0 } },
+                        },
+                    },
+                    {
+                        Member: {
+                            model: "pixelaw-Pixel",
+                            member: "x",
+                            operator: "Lte",
+                            value: { Primitive: { U32: 10 } },
+                        },
+                    },
+                    {
+                        Member: {
+                            model: "pixelaw-Pixel",
+                            member: "y",
+                            operator: "Gte",
+                            value: { Primitive: { U32: 0 } },
+                        },
+                    },
+                    {
+                        Member: {
+                            model: "pixelaw-Pixel",
+                            member: "y",
+                            operator: "Lte",
+                            value: { Primitive: { U32: 10 } },
                         },
                     },
                 ],

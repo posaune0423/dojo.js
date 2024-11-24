@@ -31,6 +31,7 @@ export function convertQueryToClause<T extends SchemaType>(
 
     // If there are clauses, combine them under a single Composite clause
     if (clauses.length > 1) {
+        console.log("clauses", clauses);
         return {
             Composite: {
                 operator: "Or",
